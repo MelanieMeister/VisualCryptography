@@ -24,6 +24,7 @@ public abstract class GuiHelper {
         GridPane.setHgrow(b, Priority.ALWAYS);
         GridPane.setHalignment(b, HPos.CENTER);
         b.getStyleClass().add("button");
+
         b.setPadding(new Insets(10));
         return b;
     }

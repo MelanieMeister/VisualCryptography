@@ -2,6 +2,7 @@ package view;
 
 import com.sun.glass.ui.Size;
 import javafx.application.Application;
+import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Point2D;
 import javafx.geometry.Pos;
@@ -57,6 +58,7 @@ public class ResultView extends VBox implements ViewMixin {
         getStylesheets().add(sheet);
         this.setAlignment(Pos.CENTER);
         this.setPadding(new Insets(15));
+        this.getStyleClass().add("root");
     }
 
     @Override
@@ -106,6 +108,7 @@ public class ResultView extends VBox implements ViewMixin {
             currentStage.close();
             startView.show();
         });
+        goBackButton.setOnMouseEntered(e-> getScene().setCursor(Cursor.HAND));
     }
 
     @Override

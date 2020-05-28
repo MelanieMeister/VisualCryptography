@@ -3,6 +3,7 @@ package view;
 import com.sun.glass.ui.Size;
 import javafx.application.Application;
 import javafx.geometry.Insets;
+import javafx.scene.Cursor;
 import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
@@ -45,6 +46,7 @@ public class StartView extends VBox implements ViewMixin {
         getStylesheets().add(sheet);
 
         this.setPadding(new Insets(15));
+        this.getStyleClass().add("root");
     }
 
     @Override
@@ -85,6 +87,7 @@ public class StartView extends VBox implements ViewMixin {
 
     @Override
     public void setupValueChangedListeners() {
+        startButton.setOnMouseEntered(e-> getScene().setCursor(Cursor.HAND));
 
     }
 
