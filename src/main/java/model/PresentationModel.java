@@ -21,48 +21,61 @@ import java.util.Objects;
 import java.util.Random;
 
 public class PresentationModel {
-    private static BufferedImage[] m_EncryptedImages;
+    private static BufferedImage[] encryptedImages;
     private StringProperty plainText = new SimpleStringProperty();
     private DoubleProperty screenWidth = new SimpleDoubleProperty(750);
 
     public  BufferedImage[] generate(Size size) {
         if (getPlainText() == null || Objects.equals(getPlainText(), "")) return null;
 
-        if (m_EncryptedImages != null)
+        if (encryptedImages != null)
         {
-            for (int i = m_EncryptedImages.length - 1; i > 0; i--)
+            for (int i = encryptedImages.length - 1; i > 0; i--)
             {
-                m_EncryptedImages[i].getGraphics().dispose();
+                encryptedImages[i].getGraphics().dispose();
             }
-            Arrays.fill(m_EncryptedImages, null);
+            Arrays.fill(encryptedImages, null);
         }
 
         return generateImage(getPlainText(), size);
     }
 
+    /**
+     * Generates an image with a text and encrypts this image.
+     * @param inputText text to put on the image to decrypt
+     * @param size heigth and width of the image
+     * @return array containing the layers to decrypt the image
+     */
     private static BufferedImage[] generateImage(String inputText, Size size) {
+
         BufferedImage finalImage = new BufferedImage(size.width, size.height, BufferedImage.TYPE_INT_ARGB);
         BufferedImage tempImage = new BufferedImage(size.width / 2, size.height, BufferedImage.TYPE_INT_ARGB);
+        // Amount of layers to be generated
         int GENERATE_IMAGE_COUNT = 2;
+        // Array to save the layers
         BufferedImage[] image = new BufferedImage[GENERATE_IMAGE_COUNT];
 
         Random rand = new Random();
         Graphics2D g = finalImage.createGraphics ();
         Graphics2D gtemp = tempImage.createGraphics ();
 
+        // Create the string to draw on the image
         g.setColor(Color.black);
         Font font = new Font("Times New Roman", Font.BOLD, 50);
         g.setFont(font);
+        // Align text in the middle / center of the image
         TextLayout textLayout = new TextLayout(inputText, g.getFont(),
                 g.getFontRenderContext());
         double textHeight = textLayout.getBounds().getHeight();
         double textWidth = textLayout.getBounds().getWidth();
 
+        // Draw the image
         g.drawString(inputText, size.width / 2 - (int) textWidth / 2, size.height / 2 + (int) textHeight / 2);
         gtemp.drawImage(finalImage,0, 0, tempImage.getWidth(), tempImage.getHeight(), null);
 
         gtemp.drawImage(finalImage,0, 0, tempImage.getWidth(), tempImage.getHeight(), null);
 
+        // Create layers
         for (int i = 0; i < image.length; i++)
         {
             image[i] = new BufferedImage(size.width, size.height, BufferedImage.TYPE_INT_ARGB);
@@ -72,14 +85,19 @@ public class PresentationModel {
         int width = tempImage.getWidth();
         int height = tempImage.getHeight();
 
+        // Foreach pixel in temp image
         for (int x = 0; x < width; x += 1)
         {
             for (int y = 0; y < height; y += 1)
             {
+                // Get current pixel color
                 int pixelColor = tempImage.getRGB(x, y);
+                // Generate random number
                 index = rand.nextInt(image.length);
+                // If color of current pixel is white / empty
                 if (pixelColor == 0)
                 {
+                    // Set sub pixels for original white pixel
                     for (BufferedImage anImage : image) {
                         if (index == 0) {
                             anImage.setRGB(x * 2, y, Color.black.getRGB());
@@ -92,6 +110,7 @@ public class PresentationModel {
                 }
                 else
                 {
+                    // Set sub pixels for original black pixel
                     for (int i = 0; i < image.length; i++)
                     {
                         if ((index + i) % image.length == 0)
@@ -114,6 +133,11 @@ public class PresentationModel {
         return image;
     }
 
+    /**
+     * Converts the BufferedImage to a Image.
+     * @param image buffed image to be converted to image
+     * @return converted image
+     */
     public static Image convertToFxImage(BufferedImage image) {
         WritableImage wr = null;
         if (image != null) {
