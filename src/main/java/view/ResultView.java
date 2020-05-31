@@ -2,6 +2,7 @@ package view;
 
 import com.sun.glass.ui.Size;
 import javafx.application.Application;
+import javafx.embed.swing.SwingFXUtils;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Point2D;
@@ -26,12 +27,16 @@ import javafx.scene.paint.Stop;
 import javafx.scene.shape.Circle;
 import javafx.stage.Stage;
 import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
 import java.util.Arrays;
 import java.util.Objects;
 import java.util.Random;
 
 import javafx.scene.layout.BorderPane;
 import model.PresentationModel;
+
+import javax.imageio.ImageIO;
 
 public class ResultView extends VBox implements ViewMixin {
     private final PresentationModel model;
@@ -74,9 +79,17 @@ public class ResultView extends VBox implements ViewMixin {
             imageViews[i] = GuiHelper.getImageView();
             imageViews[i].setImage(model.convertToFxImage(bufferedImages[i]));
 
+            File f = new File("C:/Users/Meister/Documents/FHNW/krysi");
+            try{
+                ImageIO.write(bufferedImages[i], "png", f);
+            }catch (IOException e) {
+
+            }
             resultImageViews[i] = GuiHelper.getImageView();
             resultImageViews[i].setImage(model.convertToFxImage(bufferedImages[i]));
         }
+
+
         titles[0] = GuiHelper.getTitle("Encryption");
         titles[1] = GuiHelper.getTitle("Decryption");
 
