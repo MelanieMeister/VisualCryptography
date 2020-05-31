@@ -79,12 +79,6 @@ public class ResultView extends VBox implements ViewMixin {
             imageViews[i] = GuiHelper.getImageView();
             imageViews[i].setImage(model.convertToFxImage(bufferedImages[i]));
 
-            File f = new File("C:/Users/Meister/Documents/FHNW/krysi");
-            try{
-                ImageIO.write(bufferedImages[i], "png", f);
-            }catch (IOException e) {
-
-            }
             resultImageViews[i] = GuiHelper.getImageView();
             resultImageViews[i].setImage(model.convertToFxImage(bufferedImages[i]));
         }
