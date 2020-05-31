@@ -51,41 +51,41 @@ public class PresentationModel {
         BufferedImage finalImage = new BufferedImage(size.width, size.height, BufferedImage.TYPE_INT_ARGB);
         BufferedImage tempImage = new BufferedImage(size.width / 2, size.height, BufferedImage.TYPE_INT_ARGB);
         // Amount of layers to be generated
-        int GENERATE_IMAGE_COUNT = 2;
+        int imageCount = 2;
         // Array to save the layers
-        BufferedImage[] image = new BufferedImage[GENERATE_IMAGE_COUNT];
+        BufferedImage[] images = new BufferedImage[imageCount];
 
         Random rand = new Random();
         Graphics2D g = finalImage.createGraphics ();
         Graphics2D gtemp = tempImage.createGraphics ();
 
-        // Create the string to draw on the image
+        // Create the string to draw on the images
         g.setColor(Color.black);
         Font font = new Font("Times New Roman", Font.BOLD, 50);
         g.setFont(font);
-        // Align text in the middle / center of the image
+        // Align text in the middle / center of the images
         TextLayout textLayout = new TextLayout(inputText, g.getFont(),
                 g.getFontRenderContext());
         double textHeight = textLayout.getBounds().getHeight();
         double textWidth = textLayout.getBounds().getWidth();
 
-        // Draw the image
+        // Draw the images
         g.drawString(inputText, size.width / 2 - (int) textWidth / 2, size.height / 2 + (int) textHeight / 2);
         gtemp.drawImage(finalImage,0, 0, tempImage.getWidth(), tempImage.getHeight(), null);
 
         gtemp.drawImage(finalImage,0, 0, tempImage.getWidth(), tempImage.getHeight(), null);
 
         // Create layers
-        for (int i = 0; i < image.length; i++)
+        for (int i = 0; i < images.length; i++)
         {
-            image[i] = new BufferedImage(size.width, size.height, BufferedImage.TYPE_INT_ARGB);
+            images[i] = new BufferedImage(size.width, size.height, BufferedImage.TYPE_INT_ARGB);
         }
 
-        int index;
+        int random;
         int width = tempImage.getWidth();
         int height = tempImage.getHeight();
 
-        // Foreach pixel in temp image
+        // Foreach pixel in the generated image
         for (int x = 0; x < width; x += 1)
         {
             for (int y = 0; y < height; y += 1)
@@ -93,35 +93,36 @@ public class PresentationModel {
                 // Get current pixel color
                 int pixelColor = tempImage.getRGB(x, y);
                 // Generate random number
-                index = rand.nextInt(image.length);
+                random = rand.nextInt(images.length);
                 // If color of current pixel is white / empty
                 if (pixelColor == 0)
                 {
                     // Set sub pixels for original white pixel
-                    for (BufferedImage anImage : image) {
-                        if (index == 0) {
-                            anImage.setRGB(x * 2, y, Color.black.getRGB());
-                            anImage.setRGB(x * 2 + 1, y, new Color(0, 0, 0, 0).getRGB());
+                    for (BufferedImage image : images) {
+                        if (random == 0) {
+                            image.setRGB(x * 2, y, Color.black.getRGB());
+                            image.setRGB(x * 2 + 1, y, new Color(0, 0, 0, 0).getRGB());
                         } else {
-                            anImage.setRGB(x * 2, y, new Color(0, 0, 0, 0).getRGB());
-                            anImage.setRGB(x * 2 + 1, y, Color.black.getRGB());
+                            image.setRGB(x * 2, y, new Color(0, 0, 0, 0).getRGB());
+                            image.setRGB(x * 2 + 1, y, Color.black.getRGB());
                         }
                     }
                 }
                 else
                 {
                     // Set sub pixels for original black pixel
-                    for (int i = 0; i < image.length; i++)
+                    for (int i = 0; i < images.length; i++)
                     {
-                        if ((index + i) % image.length == 0)
+                        // Check which subpixel combination to chose
+                        if ((random + i) % images.length == 0)
                         {
-                            image[i].setRGB(x * 2, y, Color.black.getRGB());
-                            image[i].setRGB(x * 2 + 1, y, new Color(0, 0, 0, 0).getRGB());
+                            images[i].setRGB(x * 2, y, Color.black.getRGB());
+                            images[i].setRGB(x * 2 + 1, y, new Color(0, 0, 0, 0).getRGB());
                         }
                         else
                         {
-                            image[i].setRGB(x * 2, y, new Color(0, 0, 0, 0).getRGB());
-                            image[i].setRGB(x * 2 + 1, y, Color.black.getRGB());
+                            images[i].setRGB(x * 2, y, new Color(0, 0, 0, 0).getRGB());
+                            images[i].setRGB(x * 2 + 1, y, Color.black.getRGB());
                         }
                     }
                 }
@@ -130,7 +131,8 @@ public class PresentationModel {
         tempImage.getGraphics().dispose();
         finalImage.getGraphics().dispose();
 
-        return image;
+        // Return array with images (layers)
+        return images;
     }
 
     /**
